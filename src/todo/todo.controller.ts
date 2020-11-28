@@ -1,26 +1,27 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { get } from 'http';
 import { title } from 'process';
 import { identity } from 'rxjs';
+import { TodoService } from './todo.service';
 
 @Controller('todo')
 export class TodoController {
+    constructor(private todoService:TodoService){
+    }
 
     @Get()
-    getTodos(): string {
-        return 'This my cat';
+    getTodos(){
+        return this.todoService.getTodo()
     }
 
     @Post()
-    postTodo(@Body("title") title:string, @Body("subtitle") subtitle:string){
-        console.log(`title: ${title}, subtitel: ${subtitle}`)
-        return 'success'
+    postTodo(@Body("id") id:string, @Body("title") title:string, @Body("subtitle") subtitle:string){
+        this.todoService.addTodo(id,title,subtitle)
     }
 
-    @Get("/1/:id")
-    getTodo2(@Param("id")id:string){
+    @Delete("/1/:id")
+    deleteTodoById(@Param("id") id:string){
         console.log(`id: ${id}`)
-        return `id is ${id}`
+        return this.todoService.removeTodoById(id)
     }
 }
-
